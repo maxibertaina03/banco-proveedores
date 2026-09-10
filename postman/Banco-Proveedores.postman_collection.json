@@ -1,0 +1,313 @@
+{
+  "info": {
+    "name": "Banco Proveedores",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Mocks de terceros que consume Banco Orbital. Todo pide x-api-key salvo /health."
+  },
+  "item": [
+    {
+      "name": "Health check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "description": "No pide API key: el banco tiene que poder ver si estamos vivos aunque la credencial esté mal."
+      }
+    },
+    {
+      "name": "Servicios",
+      "item": [
+        {
+          "name": "Listar empresas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/empresas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filtrar por rubro",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/empresas?rubro=luz",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas"
+              ],
+              "query": [
+                {
+                  "key": "rubro",
+                  "value": "luz"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultar deuda",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/empresas/edenor/deuda?numero_cliente=123456789",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas",
+                "edenor",
+                "deuda"
+              ],
+              "query": [
+                {
+                  "key": "numero_cliente",
+                  "value": "123456789"
+                }
+              ]
+            },
+            "description": "Devuelve 2 facturas. Un cliente al día (probar con 111111111 en aysa) devuelve 200 con lista vacía, NO 404."
+          }
+        },
+        {
+          "name": "Consultar deuda de un cliente al día",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/empresas/aysa/deuda?numero_cliente=111111111",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas",
+                "aysa",
+                "deuda"
+              ],
+              "query": [
+                {
+                  "key": "numero_cliente",
+                  "value": "111111111"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pagar una factura",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/empresas/edenor/pagos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas",
+                "edenor",
+                "pagos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"factura_id\": \"fac-edenor-202608\",\n  \"importe\": 45320.75\n}"
+            },
+            "description": "El proveedor NO mueve plata: el débito lo hace el banco. Con la misma Idempotency-Key, reintentar devuelve el 201 original en vez de un 409."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recargas",
+      "item": [
+        {
+          "name": "Listar operadoras",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/operadoras",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "operadoras"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Recargar saldo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/operadoras/movistar/recargas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "operadoras",
+                "movistar",
+                "recargas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numero\": \"3514123456\",\n  \"monto\": 2000\n}"
+            }
+          }
+        },
+        {
+          "name": "Recarga rechazada (número ...0000)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/operadoras/movistar/recargas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "operadoras",
+                "movistar",
+                "recargas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numero\": \"3514120000\",\n  \"monto\": 2000\n}"
+            },
+            "description": "Rechazo reproducible a propósito, 422. Sirve para probar el manejo de error del banco sin apagar el servicio."
+          }
+        },
+        {
+          "name": "Monto no aceptado por la operadora",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/operadoras/tuenti/recargas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "operadoras",
+                "tuenti",
+                "recargas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numero\": \"3514123456\",\n  \"monto\": 10000\n}"
+            },
+            "description": "Tuenti sólo acepta 200, 500 y 1000. Devuelve 400 diciendo cuáles son."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000"
+    },
+    {
+      "key": "apiKey",
+      "value": "orbital-proveedores-2026"
+    }
+  ]
+}

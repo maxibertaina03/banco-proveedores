@@ -1,0 +1,26 @@
+{
+  "name": "banco-proveedores",
+  "version": "1.0.0",
+  "description": "Mocks de proveedores externos que consume Banco Orbital: empresas de servicios y operadoras de celular",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "zod": "^4.1.12",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.1",
+    "vitest": "^1.6.1"
+  }
+}
